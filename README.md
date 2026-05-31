@@ -14,11 +14,17 @@
 
 ## Demo 视频
 
-> 请将 demo 视频上传至仓库 `demo/` 目录，或在此处填写视频链接
+**Demo 视频链接:** [待上传后替换]
 
-**Demo 视频链接:** [待填写]
+> 视频过大(198MB)，请访问 B站/YouTube 链接查看完整功能演示。
 
-## 快速开始
+## 在线使用
+
+**直接打开**: [https://dawwnforu.github.io/multi-platform-publisher/](https://dawwnforu.github.io/multi-platform-publisher/)
+
+> 无需安装，浏览器打开即用。编辑内容自动保存到浏览器本地存储。
+
+## 本地开发
 
 ```bash
 npm install
@@ -29,10 +35,27 @@ npm run dev
 
 ## 技术栈
 
-- React 19 + TypeScript
-- Vite
-- Milkdown Crepe (ProseMirror 所见即所得编辑器)
-- markdown-it (Markdown → 各平台格式转换)
+| 依赖 | 用途 | 说明 |
+|------|------|------|
+| React 19 + TypeScript | 前端框架 | UI 组件与状态管理 |
+| Vite | 构建工具 | 开发服务器与生产构建 |
+| @milkdown/crepe | WYSIWYG 编辑器 | 提供 ProseMirror 编辑核心、斜杠菜单、浮动工具栏 |
+| @milkdown/react | React 集成 | 编辑器与 React 组件桥接 |
+| @milkdown/kit | 编辑器工具包 | 提供 editorViewCtx、utils 等底层 API |
+| markdown-it | Markdown 解析 | 编辑器内容转为各平台格式 |
+| GitHub Pages | 部署 | GitHub Actions 自动构建部署 |
+
+## 原创功能说明
+
+本项目基于上述开源框架构建，以下为**自主开发的核心功能**：
+
+- **多平台格式转换引擎** (`src/engines/`) — 基于 markdown-it，针对公众号/知乎/小红书/B站各自的内容规范，自主实现格式转换、样式适配、字数限制检测
+- **文件夹收纳系统** — 类浏览器收藏夹的文档管理，含预设文件夹、自定义分类、localStorage 持久化
+- **大纲导航侧边栏** — 从编辑器 DOM 动态提取标题层级，点击跳转对应段落
+- **三栏可拖拽布局** — 基于 mousedown/mousemove 实现的三栏比例拖拽调节
+- **自定义斜杠菜单项** — 在 Crepe 原有菜单上扩展本地图片上传（base64 嵌入）、GIF 动图、视频插入、删除块等功能
+- **平台预览手机框** — 模拟各平台移动端展示效果的预览组件
+- **新手引导 & 帮助系统** — 首次访问弹窗 + 完整功能说明文档
 
 ## 平台适配说明
 
