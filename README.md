@@ -14,9 +14,7 @@
 
 ## Demo 视频
 
-**Demo 视频链接:** [待上传后替换]
-
-> 视频过大(198MB)，请访问 B站/YouTube 链接查看完整功能演示。
+**B站演示视频:** [https://www.bilibili.com/video/BV1qFVQ63EeG/](https://www.bilibili.com/video/BV1qFVQ63EeG/)
 
 ## 在线使用
 
