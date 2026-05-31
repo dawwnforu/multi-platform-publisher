@@ -24,3 +24,16 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Fix slash menu disappearing on mouse move */
+.milkdown-slash-menu {
+  pointer-events: auto !important;
+  z-index: 200 !important;
+}
+
+.milkdown-slash-menu [role="menuitem"],
+.milkdown-slash-menu button,
+.milkdown-slash-menu .menu-item {
+  cursor: pointer;
+  pointer-events: auto;
+}
