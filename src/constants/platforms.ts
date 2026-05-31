@@ -1,0 +1,48 @@
+import type { PlatformConfig } from '../types';
+
+export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
+  wechat: {
+    id: 'wechat',
+    name: '公众号',
+    description: '微信公众号图文消息',
+    outputFormat: 'html',
+    maxTitleLength: 64,
+    maxBodyLength: 20000,
+    coverAspectRatio: { width: 2.35, height: 1 },
+    supportedFeatures: ['bold', 'italic', 'heading', 'quote', 'list', 'image', 'link', 'code', 'hr'],
+    unsupportedFeatures: ['task-list', 'table'],
+  },
+  zhihu: {
+    id: 'zhihu',
+    name: '知乎',
+    description: '知乎文章',
+    outputFormat: 'markdown',
+    maxTitleLength: 100,
+    maxBodyLength: 50000,
+    coverAspectRatio: { width: 16, height: 9 },
+    supportedFeatures: ['bold', 'italic', 'heading', 'quote', 'list', 'image', 'link', 'code', 'hr', 'table', 'task-list'],
+    unsupportedFeatures: [],
+  },
+  xiaohongshu: {
+    id: 'xiaohongshu',
+    name: '小红书',
+    description: '小红书笔记',
+    outputFormat: 'plaintext',
+    maxTitleLength: 20,
+    maxBodyLength: 1000,
+    coverAspectRatio: { width: 3, height: 4 },
+    supportedFeatures: ['bold', 'list', 'link'],
+    unsupportedFeatures: ['heading', 'quote', 'image-inline', 'code', 'hr', 'table'],
+  },
+  bilibili: {
+    id: 'bilibili',
+    name: 'B站',
+    description: '哔哩哔哩专栏',
+    outputFormat: 'html',
+    maxTitleLength: 100,
+    maxBodyLength: 50000,
+    coverAspectRatio: { width: 16, height: 9 },
+    supportedFeatures: ['bold', 'italic', 'heading', 'quote', 'list', 'image', 'link', 'code', 'hr', 'table'],
+    unsupportedFeatures: ['task-list'],
+  },
+};
