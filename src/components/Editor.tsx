@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/react';
 import { Crepe } from '@milkdown/crepe';
 import { editorViewCtx } from '@milkdown/kit/core';
+import type { Ctx } from '@milkdown/kit/ctx';
 
 interface EditorProps {
   value: string;
@@ -28,7 +29,7 @@ function MilkdownEditor({ value, onChange }: EditorProps) {
               .addItem('gif', {
                 label: 'GIF动图',
                 icon: gifIcon,
-                onRun: (ctx) => {
+                onRun: (ctx: Ctx) => {
                   const url = prompt('输入 GIF 图片 URL:');
                   if (!url?.trim()) return;
                   const view = ctx.get(editorViewCtx);
@@ -41,7 +42,7 @@ function MilkdownEditor({ value, onChange }: EditorProps) {
               .addItem('video', {
                 label: '视频',
                 icon: videoIcon,
-                onRun: (ctx) => {
+                onRun: (ctx: Ctx) => {
                   const url = prompt('输入视频 URL (支持 .mp4 / .webm / .mov 等):');
                   if (!url?.trim()) return;
                   const view = ctx.get(editorViewCtx);
@@ -56,7 +57,7 @@ function MilkdownEditor({ value, onChange }: EditorProps) {
               .addItem('delete', {
                 label: '删除',
                 icon: deleteIcon,
-                onRun: (ctx) => {
+                onRun: (ctx: Ctx) => {
                   const view = ctx.get(editorViewCtx);
                   const { state, dispatch } = view;
                   const { from, to, $from } = state.selection;

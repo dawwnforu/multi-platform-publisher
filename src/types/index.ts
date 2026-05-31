@@ -15,4 +15,5 @@ export interface PlatformConfig {
 export interface RenderResult {
   html: string;
   plainText: string;
+  copyContent?: string;
 }

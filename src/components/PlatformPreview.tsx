@@ -19,7 +19,6 @@ export default function PlatformPreview({ markdown, platform }: PlatformPreviewP
   const handleCopy = async () => {
     try {
       if (config.outputFormat === 'html') {
-        // @ts-expect-error ClipboardItem not in all TS versions
         const item = new ClipboardItem({
           'text/html': new Blob([result.html], { type: 'text/html' }),
           'text/plain': new Blob([result.plainText], { type: 'text/plain' }),
@@ -83,7 +82,7 @@ export default function PlatformPreview({ markdown, platform }: PlatformPreviewP
               />
             ) : (
               <div className="empty-preview" style={{ color: '#999', padding: '40px 20px', textAlign: 'center' }}>
-                在左侧编辑器中输入内容，这里会实时显示{config.name}的预览效果
+                {placeholderText}
               </div>
             )}
           </div>
