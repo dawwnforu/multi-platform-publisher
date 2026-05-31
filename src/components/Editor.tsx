@@ -16,7 +16,23 @@ const gifIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
 const imageIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
 const videoIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
 
-function pickFileAndInsert(ctx: Ctx, label: string): void {
+function insertImageNode(ctx: Ctx, src: string): void {
+  const view = ctx.get(editorViewCtx);
+  const { state, dispatch } = view;
+  const schema = state.schema;
+  const nodeType = schema.nodes['image-block'] || schema.nodes['image'];
+  if (!nodeType) return;
+  const imageNode = nodeType.create({ src });
+  const tr = state.tr.replaceSelectionWith(imageNode);
+  const paraType = schema.nodes.paragraph;
+  if (paraType) {
+    const para = paraType.createAndFill() || paraType.create();
+    tr.insert(tr.selection.to, para);
+  }
+  dispatch(tr);
+}
+
+function pickFileAndInsert(ctx: Ctx): void {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
@@ -25,11 +41,7 @@ function pickFileAndInsert(ctx: Ctx, label: string): void {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      const view = ctx.get(editorViewCtx);
-      const { state, dispatch } = view;
-      const { from } = state.selection;
-      const text = `![${label}](${reader.result as string})`;
-      dispatch(state.tr.insertText(text, from));
+      insertImageNode(ctx, reader.result as string);
     };
     reader.readAsDataURL(file);
   };
@@ -41,6 +53,7 @@ function MilkdownEditor({ value, onChange }: EditorProps) {
   onChangeRef.current = onChange;
 
   const [instanceLoading, getInstance] = useInstance();
+  const internalChangeRef = useRef(false);
 
   useEditor((container) => {
     const crepe = new Crepe({
@@ -54,7 +67,7 @@ function MilkdownEditor({ value, onChange }: EditorProps) {
                 label: '本地图片',
                 icon: imageIcon,
                 onRun: (ctx: Ctx) => {
-                  pickFileAndInsert(ctx, '图片');
+                  pickFileAndInsert(ctx);
                 },
               })
               .addItem('gif', {
@@ -63,11 +76,7 @@ function MilkdownEditor({ value, onChange }: EditorProps) {
                 onRun: (ctx: Ctx) => {
                   const url = prompt('输入 GIF 图片 URL:');
                   if (!url?.trim()) return;
-                  const view = ctx.get(editorViewCtx);
-                  const { state, dispatch } = view;
-                  const { from } = state.selection;
-                  const text = `![GIF](${url.trim()})`;
-                  dispatch(state.tr.insertText(text, from));
+                  insertImageNode(ctx, url.trim());
                 },
               })
               .addItem('video', {
@@ -111,6 +120,7 @@ function MilkdownEditor({ value, onChange }: EditorProps) {
 
     crepe.on((listener) => {
       listener.markdownUpdated((_ctx, markdown) => {
+        internalChangeRef.current = true;
         onChangeRef.current(markdown);
       });
     });
@@ -118,15 +128,16 @@ function MilkdownEditor({ value, onChange }: EditorProps) {
     return crepe;
   }, []);
 
-  // Sync editor content when value prop changes (e.g., switching documents)
+  // Sync editor content when value prop changes externally (e.g., switching documents)
   useEffect(() => {
     if (instanceLoading) return;
+    if (internalChangeRef.current) {
+      internalChangeRef.current = false;
+      return;
+    }
     const editor = getInstance();
     if (!editor) return;
-    const currentMd = editor.action((ctx) => ctx.get(editorViewCtx).state.doc.textContent) ?? '';
-    if (value !== currentMd) {
-      editor.action(replaceAll(value));
-    }
+    editor.action(replaceAll(value));
   }, [value, instanceLoading, getInstance]);
 
   return <Milkdown />;

@@ -214,39 +214,46 @@ export default function App() {
   }, [activeDocId]);
 
   const createFolder = () => {
-    const name = prompt('文件夹名称:');
-    if (!name?.trim()) return;
-    const id = uid();
-    setFolders((prev) => [...prev, { id, name: name.trim(), items: [] }]);
-    setExpandedFolders((prev) => new Set(prev).add(id));
+    setFolderOpen(false);
+    requestAnimationFrame(() => {
+      const name = prompt('文件夹名称:');
+      if (!name?.trim()) return;
+      const id = uid();
+      setFolders((prev) => [...prev, { id, name: name.trim(), items: [] }]);
+      setExpandedFolders((prev) => new Set(prev).add(id));
+    });
   };
 
   const deleteFolder = (folderId: string) => {
     const folder = folders.find((f) => f.id === folderId);
     if (!folder) return;
-    if (folder.items.length > 0 && !confirm(`删除"${folder.name}"及其所有文档？`)) return;
-    setFolders((prev) => prev.filter((f) => f.id !== folderId));
-    // If active doc was in this folder, switch to another
-    if (folder.items.some((d) => d.id === activeDocId)) {
-      const other = folders.find((f) => f.id !== folderId && f.items.length > 0);
-      setActiveDocId(other?.items[0]?.id ?? '');
-    }
+    setFolderOpen(false);
+    requestAnimationFrame(() => {
+      if (folder.items.length > 0 && !confirm(`删除"${folder.name}"及其所有文档？`)) return;
+      setFolders((prev) => prev.filter((f) => f.id !== folderId));
+      if (folder.items.some((d) => d.id === activeDocId)) {
+        const other = folders.find((f) => f.id !== folderId && f.items.length > 0);
+        setActiveDocId(other?.items[0]?.id ?? '');
+      }
+    });
   };
 
   const addDocument = (folderId: string) => {
-    const name = prompt('文档名称:');
-    if (!name?.trim()) return;
-    const doc: DocItem = {
-      id: uid(),
-      name: name.trim(),
-      markdown: '',
-      createdAt: Date.now(),
-    };
-    setFolders((prev) =>
-      prev.map((f) => (f.id === folderId ? { ...f, items: [...f.items, doc] } : f))
-    );
-    setActiveDocId(doc.id);
     setFolderOpen(false);
+    requestAnimationFrame(() => {
+      const name = prompt('文档名称:');
+      if (!name?.trim()) return;
+      const doc: DocItem = {
+        id: uid(),
+        name: name.trim(),
+        markdown: '',
+        createdAt: Date.now(),
+      };
+      setFolders((prev) =>
+        prev.map((f) => (f.id === folderId ? { ...f, items: [...f.items, doc] } : f))
+      );
+      setActiveDocId(doc.id);
+    });
   };
 
   const deleteDocument = (docId: string) => {
